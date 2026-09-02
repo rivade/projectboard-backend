@@ -1,17 +1,13 @@
 import os
-
 import pymongo
 from dotenv import load_dotenv
 from pymongo.server_api import ServerApi
-
-global client
-global db_name
 
 def init():
     load_dotenv()
 
     uri = os.getenv('MONGODB_URI')
-    
+
     global db_name
     db_name = os.getenv('MONGODB_DB_NAME')
 

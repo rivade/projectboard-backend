@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="sv">
+
+<head>
+    <meta charset="UTF-8">
+    <title>API-bron</title>
+</head>
+
+<body>
+    <h1>Projekt</h1>
+    <button id="loadButton">Hämta projekt</button>
+    <p id="message"></p>
+    <ul id="projectList"></ul>
+    <script>
+        const button = document.querySelector("#loadButton")
+        const list = document.querySelector("#projectList")
+        const message = document.querySelector("#message")
+        async function loadProjects() {
+            message.textContent = "Laddar..."
+            try {
+                const response = await fetch(
+                    "http://127.0.0.1:8001/api/projects"
+                )
+                if (!response.ok) throw new Error("API-fel")
+                const projects = await response.json()
+                list.innerHTML = ""
+                for (const project of projects) {
+                    const item = document.createElement("li")
+                    item.textContent = `${project.title} - ${project.status}`
+                    list.appendChild(item)
+                }
+                message.textContent = `${projects.length} projekt hämtades`
+            } catch {
+                message.textContent = "Kunde inte kontakta API:t"
+            }
+        }
+        button.addEventListener("click", loadProjects)
+    </script>
+</body>
+
+</html>
