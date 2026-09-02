@@ -1,5 +1,6 @@
 from typing import Literal
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 import validation
 
@@ -14,6 +15,15 @@ class ProjectCreate(BaseModel):
 def init():
     """Initialize and configure the FastAPI application"""
     app = FastAPI(title="API-bron")
+    
+    # Enable CORS
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["*"],  # Allow all origins
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
     
     # In-memory storage (replace with database calls)
     projects = []
