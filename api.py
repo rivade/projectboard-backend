@@ -2,7 +2,7 @@ from typing import Literal
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
-import validation
+import mongo
 
 
 class ProjectCreate(BaseModel):
@@ -14,7 +14,9 @@ class ProjectCreate(BaseModel):
 
 def init():
     """Initialize and configure the FastAPI application"""
-    app = FastAPI(title="API-bron")
+    app = FastAPI(title="ProjectBoard API")
+
+    projects = mongo.get_projects()
     
     # Enable CORS
     app.add_middleware(
@@ -24,9 +26,6 @@ def init():
         allow_methods=["*"],
         allow_headers=["*"],
     )
-    
-    # In-memory storage (replace with database calls)
-    projects = []
     
     @app.get("/")
     def home():

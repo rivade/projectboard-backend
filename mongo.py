@@ -22,3 +22,8 @@ def test_connection():
         print(e)
 
     print(client.list_database_names())
+
+def get_projects():
+    db = client[db_name]
+    collection = db['projects']
+    return list(collection.find({}, {'_id': 0}))
