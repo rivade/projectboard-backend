@@ -15,8 +15,6 @@ class ProjectCreate(BaseModel):
 def init():
     """Initialize and configure the FastAPI application"""
     app = FastAPI(title="ProjectBoard API")
-
-    projects = mongo.get_projects()
     
     # Enable CORS
     app.add_middleware(
@@ -35,16 +33,11 @@ def init():
     @app.get("/api/projects")
     def get_projects():
         """Retrieve all projects"""
-        return projects
+        return mongo.get_projects()
     
     @app.post("/api/projects", status_code=201)
     def create_project(project: ProjectCreate):
         """Create a new project"""
-        new_project = {
-            "id": len(projects) + 1,
-            **project.model_dump()
-        }
-        projects.append(new_project)
-        return new_project
+        return mongo.post_project(project.model_dump())
     
     return app
