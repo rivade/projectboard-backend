@@ -39,5 +39,10 @@ def init():
     def create_project(project: ProjectCreate):
         """Create a new project"""
         return mongo.post_project(project.model_dump())
+
+    @app.delete("/api/projects/{project_id}")
+    def delete_project(project_id: str):
+        """Delete a project by its ID"""
+        return mongo.delete_project(project_id)
     
     return app

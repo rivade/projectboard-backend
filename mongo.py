@@ -1,6 +1,8 @@
 import os
+import json
 import pymongo
 from bson import ObjectId
+from bson import json_util
 from dotenv import load_dotenv
 from pymongo.server_api import ServerApi
 
@@ -15,6 +17,12 @@ def init():
     global client
     client = pymongo.MongoClient(uri, server_api=ServerApi('1'))
 
+    global db
+    db = client[db_name]
+
+    global collection
+    collection = db['projects']
+
 def test_connection():
     try:
         client.admin.command('ping')
@@ -25,24 +33,15 @@ def test_connection():
     print(client.list_database_names())
 
 def get_projects():
-    db = client[db_name]
-    collection = db['projects']
-    return [_json_safe(project) for project in collection.find()]
-
-def _json_safe(value):
-    if isinstance(value, ObjectId):
-        return str(value)
-    if isinstance(value, dict):
-        return {key: _json_safe(item) for key, item in value.items()}
-    if isinstance(value, list):
-        return [_json_safe(item) for item in value]
-    return value
+    return json.loads(json_util.dumps(collection.find()))
 
 def post_project(project):
-    db = client[db_name]
-    collection = db['projects']
     result = collection.insert_one(project.copy())
     return {
         "id": str(result.inserted_id),
         **project
     }
+
+def delete_project(project_id):
+    result = collection.delete_one({"_id": ObjectId(project_id)})
+    return {"deleted_count": result.deleted_count}
