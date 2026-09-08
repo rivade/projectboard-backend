@@ -40,9 +40,14 @@ def init():
         """Create a new project"""
         return mongo.post_project(project.model_dump())
 
-    @app.delete("/api/projects/{project_id}")
+    @app.delete("/api/projects/{project_id}", status_code=204)
     def delete_project(project_id: str):
         """Delete a project by its ID"""
         return mongo.delete_project(project_id)
-    
+
+    @app.patch("/api/projects/{project_id}/status/{status}")
+    def update_project(project_id: str, status: Literal["planned", "active", "done"]):
+        """Update a project by its ID"""
+        return mongo.update_project(project_id, status)
+
     return app

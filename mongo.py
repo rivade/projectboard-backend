@@ -23,6 +23,7 @@ def init():
     global collection
     collection = db['projects']
 
+
 def test_connection():
     try:
         client.admin.command('ping')
@@ -41,6 +42,10 @@ def post_project(project):
         "id": str(result.inserted_id),
         **project
     }
+
+def update_project(project_id, status):
+    collection.update_one({"_id": ObjectId(project_id)}, {"$set": {"status": status}})
+    return {"message": "Project updated successfully"}
 
 def delete_project(project_id):
     result = collection.delete_one({"_id": ObjectId(project_id)})
